@@ -22,7 +22,7 @@ long_description = pypandoc.convert('README.md', 'rst')
 
 setup(
     name='svty',
-    version='0.8',
+    version='0.8.1',
     packages=['svty'],
     url='https://github.com/ShaheedHaque/svty',
     license='GPL-3.0',
