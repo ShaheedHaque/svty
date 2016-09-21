@@ -1,10 +1,16 @@
 # svty
 Curses UI for a combination of tmux/screen and SSH (with multiple jump hosts).
 
-* SSH is often used in environments where lab machines are located behind one or more jump hosts. Svty allows
-convenient access to these targets whatever combination of password-less, manually-typed password or even hard-coded
-passwords are in use.
+* SSH is often used in environments where lab machines are located behind one or more jump hosts. Svty allows convenient access to these targets whatever combination of password-less, manually-typed password or even hard-coded passwords are in use.
 
+    * Start on the home screen
+    ![Home Screen][homescreen]
+    * Use left/right arrow keys to view any of the tmux(1) or screen(1) sessions:
+    ![Capture from tmux(1)][tmux-capture]
+    ![Capture from screen(1)][screen-capture] 
+    * Hit return to resume it:
+    ![Resumed tmux(1)][tmux-resume] 
+    ![Resumed screen(1)][screen-resume] 
     * Of course, svty works fine on your local machine too.
 
 * tmux(1) and screen(1) are often used to provide for persistence sessions, but selecting the correct previously
@@ -43,3 +49,8 @@ created session is typically a fiddly affair. Svty simplifies this by displaying
         ```
 
 
+[homescreen]: https://github.com/ShaheedHaque/svty/raw/master/images/homescreen.png "Home Screen"
+[screen-capture]: https://github.com/ShaheedHaque/svty/raw/master/images/screen-capture.png "Capture from screen(1)"
+[screen-resume]: https://github.com/ShaheedHaque/svty/raw/master/images/screen-resume.png "Resumed screen(1)"
+[tmux-capture]: https://github.com/ShaheedHaque/svty/raw/master/images/tmux-capture.png "Capture from tmux(1)"
+[tmux-resume]: https://github.com/ShaheedHaque/svty/raw/master/images/tmux-resume.png "Resumed tmux(1)"
