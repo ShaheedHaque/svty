@@ -41,7 +41,8 @@ class ScreenTerminal(AbstractTerminal):
 
     def check_output(self, args, safe_msgs=()):
         cmd = [self.program] + args
-        stdout = self.exec.check_output(cmd, lambda stdout, returncode: returncode == 1 and stdout.startswith(safe_msgs))
+        stdout = self.exec.check_output(cmd,
+                                        lambda stdout, returncode: returncode == 1 and stdout.startswith(safe_msgs))
         return stdout.strip().split("\n") if stdout else []
 
     def list_sessions(self):
@@ -126,7 +127,9 @@ class ScreenSession(AbstractSession):
         assert len(stdout) % 2 == 0
         windows = [(stdout[i], stdout[i + 1]) for i in range(0, len(stdout), 2)]
         windows = [(re.sub("[-$!@L&Z]", "", w[0]), w[1]) for w in windows]
-        windows = [ScreenWindow(self.manager, w[0].replace("*", ""), w[1], 1 if w[0][-1] == "*" else 0) for w in windows]
+        windows = [ScreenWindow(self.manager, w[0].replace("*", ""),
+                                w[1],
+                                1 if w[0][-1] == "*" else 0) for w in windows]
         #
         # If the window list is of length 1, ensure that the one window is marked active, since screen does not bother.
         #

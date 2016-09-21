@@ -29,8 +29,8 @@ import os
 import pty
 import re
 import select
+import setproctitle
 import shlex
-import six
 import signal
 import socket
 import struct
@@ -102,7 +102,7 @@ class SSHMultiPass(threading.Thread):
         """
         super(SSHMultiPass, self).__init__(name=self.__class__.__name__)
         self.prompt_buffer = b""
-        self.passwords = {k.encode():v.encode() for k, v in passwords.items()}
+        self.passwords = {k.encode(): v.encode() for k, v in passwords.items()}
         self.allpasswords = [k for k, v in self.passwords.items()]
         self.add_cr = add_cr
         self.is_a_tty = None
@@ -118,7 +118,7 @@ class SSHMultiPass(threading.Thread):
     def output(self, argv, stdin=sys.stdin):
         """
         Execute the command, and return output. All passwords provided in the constructor will be used automatically
-         and the user will be prompted where there is no password and SSH is unable to use passwordless-login.
+         and the user will be prompted where there is no password and SSH is unable to use password-less login.
          Modelled on subprocess.output().
 
         :param argv:            The ssh(1) or scp(1) command to run. This should
@@ -151,7 +151,7 @@ class SSHMultiPass(threading.Thread):
         """
         Execute the command, output goes to sys.stdout. All passwords provided in the constructor will be used
          automatically and the user will be prompted where there is no password and SSH is unable to use
-         passwordless-login. Modelled on subprocess.call().
+         password-less login. Modelled on subprocess.call().
 
         :param argv:            The ssh(1) or scp(1) command to run. This should use
                                 -oProxyCommand's to jump across hosts. See the
@@ -487,7 +487,7 @@ class SSHMultiPass(threading.Thread):
         return wrapper, remote, passwords
 
 
-def parse_uphps(encoded_uphps):
+def parse_uphps(encoded_uphps: str) -> list:
     """
     Decode a list of User[:Password]@Host[:Port] entries, separated by "+".
 
@@ -540,7 +540,7 @@ def parse_uphps(encoded_uphps):
                 raise ValueError(_("Cannot find host address in '{}'").format(uphp)) from None
             try:
                 port = int(hp[1])
-            except ValueError as e:
+            except ValueError:
                 raise ValueError(_("Expected numeric port in '{}'").format(uphp)) from None
             uphps.append((user, password[2:], host, port))
     except ValueError as e:
@@ -549,18 +549,17 @@ def parse_uphps(encoded_uphps):
 
 
 def run(args, follow_on=SSHMultiPass.FOLLOW_ON_NONE):
-    if args.uphps:
-        args.uphps = parse_uphps(args.uphps)
+    uphps = parse_uphps(args.uphps)
     #
     # Construct the SSH command.
     #
     if args.ssh_options:
         args.outer_options += " " + args.ssh_options
-    wrapper, passwords = SSHMultiPass.get_ssh_with_proxies(args.uphps, args.proxy_options, args.outer_options)
+    wrapper, passwords = SSHMultiPass.get_ssh_with_proxies(uphps, args.proxy_options, args.outer_options)
     #
     # Execute.
     #
-    logger.debug(_("Connect {} {}").format("->".join([uphp[0] + "@" + uphp[2] for uphp in args.uphps]),
+    logger.debug(_("Connect {} {}").format("->".join([uphp[0] + "@" + uphp[2] for uphp in uphps]),
                                            " ".join(args.command)))
     command = shlex.split(wrapper) + args.command
     proxied_ssh = SSHMultiPass(passwords)
@@ -615,7 +614,7 @@ $HOME/.tmux.conf file as follows:
 Examples:
 
     Jump through jumphost to reach videoserver. The jumphost password is not
-    needed because passwordless login has been set up:
+    needed because password-less login has been set up:
 
         copy-ssh-id jumphost
         jumper srhaque@jumphost+admin:secret@videoserver
@@ -652,12 +651,8 @@ Examples:
         #
         # Set the local title.
         #
-        try:
-            import setproctitle
-            title = " ".join([os.path.basename(argv[0])] + argv[1:])
-            setproctitle.setproctitle(title)
-        except ImportError:
-            pass
+        title = " ".join([os.path.basename(argv[0])] + argv[1:])
+        setproctitle.setproctitle(title)
         #
         # Run...
         #

@@ -53,7 +53,8 @@ class TMuxTerminal(AbstractTerminal):
         #
         # Jumper does not separate stderr...
         #
-        stdout = self.exec.check_output(cmd, lambda stdout, returncode: returncode == 1 and stdout.startswith(safe_msgs))
+        stdout = self.exec.check_output(cmd,
+                                        lambda stdout, returncode: returncode == 1 and stdout.startswith(safe_msgs))
         if not stdout:
             return []
         #
@@ -160,7 +161,7 @@ class TMuxSession(AbstractSession):
         #
         windows = self.list_windows()
         w = [w for w in windows if w["window_active"]]
-        assert len(w) <= 1, _("Expected upto 1 active window, not {}").format(len(w))
+        assert len(w) <= 1, _("Expected up to 1 active window, not {}").format(len(w))
         if w:
             w = w[0]
         else:
@@ -174,7 +175,7 @@ class TMuxSession(AbstractSession):
             raise RuntimeError(_("Window capture failed"), e)
         panes = w.list_panes()
         p = [p for p in panes if p["pane_active"]]
-        assert len(p) <= 1, _("Expected upto 1 active pane, not {}").format(len(p))
+        assert len(p) <= 1, _("Expected up to 1 active pane, not {}").format(len(p))
         #
         # Add a line describing the windows in this session.
         #

@@ -30,6 +30,7 @@ import json
 import logging
 import logging.handlers
 import os
+import setproctitle
 import shlex
 import struct
 import subprocess
@@ -70,10 +71,13 @@ class Executor(threading.Thread):
         self.args = args
         if self.args.uphps:
             #
-            # Construct the SSH command.
+            # Construct the SSH command. This is basically a loop that reads commands from stdin and eval's them. After
+            # each command, the exit status and a token is printed to allow the results of the command execution to be
+            # unambiguously captured.
             #
             self.token = "HI"
-            command = ["while", "IFS=", "read", "-r", "l", ";", "do", "eval", "$l", ";", "echo", "-e", "\"\\n$?\\n" + self.token + "\"", ";", "done"]
+            command = ["while", "IFS=", "read", "-r", "l", ";", "do", "eval", "$l", ";", "echo", "-e", "\"\\n$?\\n" +
+                       self.token + "\"", ";", "done"]
             self.args.command = command
             self.jumper = jumper.run(self.args, follow_on=jumper.SSHMultiPass.FOLLOW_ON_PIO)
             self.stopping = False
@@ -284,6 +288,7 @@ def show_sessions(stdscr, connections, log_handler):
         lines = lines[:page_lines]
         lines.extend([""] * (page_lines - len(lines)))
         lines = [l.ljust(page_cols)[:page_cols] for l in lines]
+        i = 0
         for i, line in enumerate(lines):
             stdscr.addstr(i, 0, line, curses.color_pair(NORMAL))
         #
@@ -384,7 +389,7 @@ Visual selection of tmux(1) (or screen(1)) sessions.
 Examples:
 
     Jump through jumphost to reach videoserver. The jumphost password is not
-    needed because passwordless login has been set up:
+    needed because password-less login has been set up:
 
         copy-ssh-id jumphost
         jumper srhaque@jumphost+admin:secret@videoserver
@@ -421,12 +426,8 @@ Examples:
         #
         # Set the local title.
         #
-        try:
-            import setproctitle
-            title = " ".join([os.path.basename(argv[0])] + argv[1:])
-            setproctitle.setproctitle(title)
-        except ImportError:
-            pass
+        title = " ".join([os.path.basename(argv[0])] + argv[1:])
+        setproctitle.setproctitle(title)
         #
         # Run...
         #

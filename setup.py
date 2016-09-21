@@ -32,5 +32,6 @@ setup(
     long_description=long_description,
     classifiers=["Topic :: Terminals :: Terminal Emulators/X Terminals",
                  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-                 "Development Status :: 5 - Production/Stable"]
+                 "Development Status :: 5 - Production/Stable"],
+    requires=['pypandoc', 'setproctitle', 'pydevd']
 )
