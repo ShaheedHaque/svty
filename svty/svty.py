@@ -321,7 +321,7 @@ class ScreenTerminal(AbstractTerminal):
             created = datetime.datetime.strptime(created[1:-1], "%d/%m/%y %H:%M:%S")
             attached = 1 if attached[1:-1].lower() == "attached" else 0
             sessions.append(ScreenSession(self, name, created, attached))
-        logger.debug(_("Found sessions {}").format([s["session_name"] for s in sessions]))
+        logger.info(_("Found sessions {}").format([s["session_name"] for s in sessions]))
         return sessions
 
     def new_session(self):
@@ -521,7 +521,7 @@ class TMuxTerminal(AbstractTerminal):
                 sessions = []
             else:
                 raise
-        logger.debug(_("Found sessions {}").format([s["session_name"] for s in sessions]))
+        logger.info(_("Found sessions {}").format([s["session_name"] for s in sessions]))
         return sessions
 
     def new_session(self):
@@ -914,7 +914,6 @@ def show_sessions(stdscr, connections, log_handler):
                 pages = (len(lines) + page_lines - 1) // page_lines
                 page_number = min(pages, page_number)
                 lines = lines[(page_number - 1) * page_lines:]
-                lines = [l.ljust(page_cols) for l in lines]
                 status = _("Page {} of {}").format(page_number, pages)
             else:
                 #
@@ -957,7 +956,7 @@ def show_sessions(stdscr, connections, log_handler):
                 def handler(x):
                     return x.isoformat() if isinstance(x, datetime.datetime) else x
 
-                lines = json.dumps(session, indent=4, default=handler).split("\n")
+                lines = json.dumps(session, indent=4, sort_keys=True, default=handler).split("\n")
                 pages = (len(lines) + page_lines - 1) // page_lines
                 page_number = min(pages, page_number)
                 lines = lines[(page_number - 1) * page_lines:]
@@ -978,11 +977,13 @@ def show_sessions(stdscr, connections, log_handler):
                 else:
                     status = lhs.ljust(page_cols - len(rhs)) + rhs
         #
-        # Write a screenful of normal content.
+        # Write a screenful of normal content. Start by making sure everything is trimmed and padded as needed.
         #
+        lines = lines[:page_lines]
         lines.extend([""] * (page_lines - len(lines)))
+        lines = [l.ljust(page_cols)[:page_cols] for l in lines]
         for i, line in enumerate(lines):
-            stdscr.addstr(i, 0, line.ljust(page_cols)[:page_cols], curses.color_pair(NORMAL))
+            stdscr.addstr(i, 0, line, curses.color_pair(NORMAL))
         #
         # The status line is truncated by one char because trying to emit that last char
         # conflicts with way ncurses handles the cursor after the write.
@@ -1130,7 +1131,7 @@ Examples:
         args = parser.parse_args(argv[1:])
         if args.debug != 0:
             import pydevd
-            pydevd.settrace('localhost', port=args.debug)  # , stdoutToServer = True, stderrToServer = True)
+            pydevd.settrace('localhost', port=args.debug, suspend=False)  # , stdoutToServer = True, stderrToServer = True)
             os.environ['TERM'] = 'xterm'
         #
         # Curses log handler.
