@@ -44,12 +44,19 @@ In each case, you'll end up on the home screen:
 
 * Start on the home screen
 ![Home Screen][homescreen]
-* Use left/right arrow keys to view any of the tmux(1) or screen(1) sessions:
+    Here you see two tmux session and two screen sessions. One of each is already attached to a client, whereas the others are not.
+* Use left/right arrow keys to view any of the tmux or screen sessions:
 ![Capture from tmux(1)][tmux-capture]
 ![Capture from screen(1)][screen-capture] 
+    Notice that sessions "\[2\]" and "\[14083.14027\]" are from tmux and screen respectively, but they are presented in a uniform manner.
 * Hit return to resume it:
 ![Resumed tmux(1)][tmux-resume] 
 ![Resumed screen(1)][screen-resume] 
+    Now you are in tmux and screen respectively, and svty has disappeared from view (of course, the SSH connection is setup for you is still there though).
+* If you continue to scroll left/right, and end up on the home screen, hitting return there will create a new session.
+
+    * The new session will be based on the first of tmux, screen, or plain vanilla SSH that works.
+    * **TBD** Should svty push local tmux and sreeen settings to the new session? That would avoid having to manually configure each of your target systems with your favourite settings! Feedback or code welcome.
 
 ## Programmatic use
 
