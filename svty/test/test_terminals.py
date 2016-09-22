@@ -17,7 +17,6 @@
 """nosetest suite for svty's tmux support."""
 import argparse
 import os
-import subprocess
 import sys
 import threading
 import time

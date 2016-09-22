@@ -69,19 +69,21 @@ class CommandLineArgumentException(Exception):
 class Executor(AbstractExecutor):
     def __init__(self, args):
         super(Executor, self).__init__()
+        self.token = "HI"
+        self.stopping = False
         self.args = args
+        self.jumper = None
+        self.process = None
         if self.args.uphps:
             #
             # Construct the SSH command. This is basically a loop that reads commands from stdin and eval's them. After
             # each command, the exit status and a token is printed to allow the results of the command execution to be
             # unambiguously captured.
             #
-            self.token = "HI"
             command = ["while", "IFS=", "read", "-r", "l", ";", "do", "eval", "$l", ";", "echo", "-e", "\"\\n$?\\n" +
                        self.token + "\"", ";", "done"]
             self.args.command = command
             self.jumper = jumper.run(self.args, follow_on=jumper.SSHMultiPass.FOLLOW_ON_PIO)
-            self.stopping = False
             self.start()
 
     def exec(self, args, quote=True):
@@ -149,9 +151,10 @@ class Executor(AbstractExecutor):
             os.environ["TZ"] = "UTC"
             os.environ["LANG"] = "en_GB.UTF-8"
             logger.debug(_("Local check_output '{}'").format(" ".join(args)))
-            process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-            stdout, stderr = process.communicate()
-            returncode = process.returncode
+            self.process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                            universal_newlines=True)
+            stdout, stderr = self.process.communicate()
+            returncode = self.process.returncode
         logger.debug(_("Returning {} '{}'").format(returncode, stdout))
         #
         # Ignore certain errors...
@@ -221,7 +224,7 @@ def show_sessions(stdscr, connections, log_handler):
         if curses.is_term_resized(real_lines, real_cols):
             logger.info(_("resizeterm to {}x{}").format(real_cols, real_lines))
             curses.resizeterm(real_lines, real_cols)
-        if (real_lines != curses.LINES or real_cols != curses.COLS):
+        if real_lines != curses.LINES or real_cols != curses.COLS:
             logger.debug(_("update_lines_cols from {}x{} to {}x{}").format(curses.COLS, curses.LINES,
                                                                            real_cols, real_lines))
             curses.update_lines_cols()

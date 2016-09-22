@@ -15,9 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 """Abstract models of Terminals, Sessions and Windows."""
-from abc import ABCMeta, abstractmethod
 import threading
-import os
+from abc import ABCMeta, abstractmethod
 
 
 class AbstractWindow(dict):
