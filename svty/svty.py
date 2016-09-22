@@ -217,9 +217,14 @@ def show_sessions(stdscr, connections, log_handler):
         sizes = struct.pack('HHHH', 0, 0, 0, 0)
         sizes = fcntl.ioctl(sys.stdin, termios.TIOCGWINSZ, sizes)
         sizes = struct.unpack('HHHH', sizes)
-        resize_needed = curses.is_term_resized(sizes[0], sizes[1])
-        if resize_needed:
-            curses.resizeterm(sizes[0], sizes[1])
+        real_lines, real_cols, py, px = sizes
+        if curses.is_term_resized(real_lines, real_cols):
+            logger.info(_("resizeterm to {}x{}").format(real_cols, real_lines))
+            curses.resizeterm(real_lines, real_cols)
+        if (real_lines != curses.LINES or real_cols != curses.COLS):
+            logger.debug(_("update_lines_cols from {}x{} to {}x{}").format(curses.COLS, curses.LINES,
+                                                                           real_cols, real_lines))
+            curses.update_lines_cols()
         page_lines = curses.LINES - 1
         page_cols = curses.COLS
         if current_session == HOME_SESSION:
