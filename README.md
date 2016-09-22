@@ -40,12 +40,14 @@ Alternatively, just run svty directly, and you will be prompted as needed (passw
     $ svty srhaque@jumphost+admin@videoserver+admin:mycat@videoslave2
     ```
 
+### Navigation model - basics
+
 In each case, you'll end up on the home screen:
 
 * Start on the home screen:  
     ![Home Screen][homescreen]  
     Here you see two tmux session and two screen sessions. One of each is already attached to a client, whereas the others are not.
-* Use left/right arrow keys to view any of the tmux or screen sessions:  
+* Use left/right arrow keys to view any of the tmux or screen session screens:  
     ![Capture from tmux(1)][tmux-capture]  
     ![Capture from screen(1)][screen-capture]  
     Notice that sessions "\[2\]" and "\[14083.14027\]" are from tmux and screen respectively, but they are presented in a uniform manner.
@@ -57,6 +59,22 @@ In each case, you'll end up on the home screen:
 
     * The new session will be based on the first of tmux, screen, or plain vanilla SSH that works.
     * **TBD** Should svty push local tmux and screen settings to the new session? That would avoid having to manually configure each of your target systems with your favourite settings! Feedback or code welcome.
+
+* Use "Q" or "q" on any screen to exit svty.
+
+### Navigation model - additional features
+
+* The UI model looks like this:  
+    | Home Screen      | tmux Session Screens... | screen Session Screens... |
+    |------------------|-------------------------|---------------------------|
+    | Additional pages | Additional pages        | Additional pages          |
+    | ...              | ...                     | ...                       |
+    | Additional pages | Additional pages        | Additional pages          |
+* On any screen, use Page Down to view the additional pages.
+
+    * On the Home Screen, see the internal logging for svty. You may wish to invoke svty with the -v option to see more detail.
+    * On a Session Screen, see the tmux or screen metadata for the session.
+    * Use Page Up to get back to the top page, and be able to scroll left/right.
 
 ## Programmatic use
 
