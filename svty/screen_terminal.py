@@ -180,7 +180,7 @@ class ScreenSession(AbstractSession):
         #
         s_lines = stdout.split("\n")[:-1]
         assert len(s_lines) + 1 == w["window_height"]
-        s_lines = [l.ljust(w["window_width"]) + "│" for l in s_lines]
+        s_lines = [l.ljust(w["window_width"]) for l in s_lines]
         #
         # Add a line describing the windows in this session.
         #

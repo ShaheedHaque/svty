@@ -294,7 +294,12 @@ def show_sessions(stdscr, connections, log_handler):
                     lines = [str(e)]
                     lhs = ""
                     rhs = ""
-                lines = lines[-page_lines:]
+                #
+                # Add visual delimiters in case the page is currently bigger than the capture.
+                #
+                lines = [l + "╏" for l in lines]
+                lines.append("╍".ljust(len(lines[0]) - 1, "╍") + "┛")
+
                 if len(lhs) + len(rhs) > page_cols:
                     status = lhs[:page_cols - 3 - len(rhs)] + "..." + rhs
                 else:

@@ -1,3 +1,4 @@
+# vim: set fileencoding=utf-8 :
 #
 # Copyright (c) 2015 S.R.Haque (srhaque@theiet.org)
 #

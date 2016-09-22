@@ -82,7 +82,8 @@ class AbstractSession(dict):
         """
         Screen capture.
 
-        :return: A tuple (screen capture for current window, status line).
+        :return: A tuple (screen capture for current window, status line). Each of these lines is padded to the width
+                 of the window, and the screen capture contains the same number of lines as the window.
         """
         raise NotImplementedError()
 
