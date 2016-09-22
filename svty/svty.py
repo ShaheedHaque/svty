@@ -32,15 +32,16 @@ import logging.handlers
 import os
 import setproctitle
 import shlex
+import signal
 import struct
 import subprocess
 import sys
 import termios
-import threading
 import time
+import tty
 
 import jumper
-from abstract_terminal import AbstractSession
+from abstract_terminal import AbstractSession, AbstractExecutor
 from null_terminal import NullTerminal
 from screen_terminal import ScreenTerminal
 from tmux_terminal import TMuxTerminal
@@ -65,9 +66,9 @@ class CommandLineArgumentException(Exception):
     pass
 
 
-class Executor(threading.Thread):
+class Executor(AbstractExecutor):
     def __init__(self, args):
-        super(Executor, self).__init__(name=self.__class__.__name__)
+        super(Executor, self).__init__()
         self.args = args
         if self.args.uphps:
             #
@@ -105,8 +106,17 @@ class Executor(threading.Thread):
             self.jumper.wait()
             self.close()
         else:
-            logger.debug(_("Local exec '{}'").format(" ".join(args)))
-            return subprocess.call(args)
+            self.process = subprocess.Popen(args, preexec_fn=os.setsid)
+            #
+            # Screen especially seems to leave things in a parlous state. Make sure we clean up.
+            #
+            old_tty = tty.tcgetattr(sys.stdin)
+            try:
+                logger.debug(_("Local exec '{}'").format(" ".join(args)))
+                self.process.communicate()
+                return self.process.returncode
+            finally:
+                tty.tcsetattr(sys.stdin, tty.TCSAFLUSH, old_tty)
 
     def check_output(self, args, ignore_errors=None):
         returncode = None
@@ -165,6 +175,8 @@ class Executor(threading.Thread):
         self.stopping = True
         if self.args.uphps:
             self.jumper.close()
+        else:
+            os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
 
 
 class HomeScreenLogHandler(logging.Handler):
