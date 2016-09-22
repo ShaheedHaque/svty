@@ -16,39 +16,33 @@
 #
 """Abstract models of Terminals, Sessions and Windows."""
 from abc import ABCMeta, abstractmethod
+import threading
+import os
 
 
-class AbstractTerminal(object):
+class AbstractWindow(dict):
     """
-    Model a verb used to implement terminal sessions.
+    Model of a screen window, a subset of tmux's model.
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, program, remote):
-        super(AbstractTerminal, self).__init__()
-        self.program = program
-        self.exec = remote
+    def __init__(self, manager):
+        super(AbstractWindow, self).__init__()
+        self.manager = manager
 
     @abstractmethod
-    def check_output(self, args, safe_msgs=()):
-        raise NotImplementedError()
-
-    def call(self, args):
-        cmd = [self.program] + args
-        return self.exec.exec(cmd)
-
-    @abstractmethod
-    def list_sessions(self):
+    def id(self):
         """
-        :return: List of AbstractSession.
-        :raises: FileNotFoundError if the relevant program is not found.
+        The key for the object.
+
+        Returns: The string key.
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def new_session(self):
+    def list_panes(self):
         """
-        :raises: FileNotFoundError if the relevant program is not found.
+        :return: A list of the Panes in the AbstractWindow.
         """
         raise NotImplementedError()
 
@@ -95,33 +89,73 @@ class AbstractSession(dict):
     @abstractmethod
     def attach(self):
         """
+        Create a new terminal session. NOTE: this function never returns! See :func:AbstractTerminal.close() for more
+        information.
+
         (Re-)attach to the session.
         """
         raise NotImplementedError()
 
 
-class AbstractWindow(dict):
+class AbstractExecutor(threading.Thread):
+    def __init__(self):
+        super(AbstractExecutor, self).__init__(name=self.__class__.__name__)
+
+    @abstractmethod
+    def exec(self, args, quote=True):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def close(self):
+        raise NotImplementedError()
+
+
+class AbstractTerminal(object):
     """
-    Model of a screen window, a subset of tmux's model.
+    Model a verb used to implement terminal sessions.
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, manager):
-        super(AbstractWindow, self).__init__()
-        self.manager = manager
+    def __init__(self, program: str, remote: AbstractExecutor) -> None:
+        super(AbstractTerminal, self).__init__()
+        self.program = program
+        self.exec = remote
 
     @abstractmethod
-    def id(self):
-        """
-        The key for the object.
+    def check_output(self, args: list, safe_msgs: tuple = ()) -> str:
+        raise NotImplementedError()
 
-        Returns: The string key.
+    def call(self, args: list) -> int:
+        """
+        Run a command in the terminal's execution context.
+
+        :param args:            The command
+        :return:                The return status of the command.
+        """
+        cmd = [self.program] + args
+        return self.exec.exec(cmd)
+
+    @abstractmethod
+    def list_sessions(self) -> AbstractSession:
+        """
+        :return: List of AbstractSession.
+        :raises: FileNotFoundError if the relevant program is not found.
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def list_panes(self):
+    def new_session(self) -> None:
         """
-        :return: A list of the Panes in the AbstractWindow.
+        Create a new terminal session. NOTE: this function never returns! See :func:close() for more information.
+
+        :raises: FileNotFoundError if the relevant program is not found.
         """
         raise NotImplementedError()
+
+    def close(self) -> None:
+        """
+        Some methods in this module never return. In order to make them testable, they will typically be invoked from
+        a thread and then this method used to close the sessions they use. NOTE: calling this method is the last
+        operation that can be performed on an instance of this class.
+        """
+        self.exec.close()
