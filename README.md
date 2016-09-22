@@ -21,42 +21,42 @@ Some GUI terminal emulators such as konsole can use commands like this to persis
 
 Alternatively, just run svty directly, and you will be prompted as needed (password-less and hard-coded passwords are dealt with automatically). Examples:
 
-    1. Jump through jumphost to reach videoserver. The jumphost password is not needed because password-less login has been set up:
+1. Jump through jumphost to reach videoserver. The jumphost password is not needed because password-less login has been set up:
 
-        ```bash
-        $ copy-ssh-id jumphost
-        $ svty srhaque@jumphost+admin:secret@videoserver
-        ```
+    ```bash
+    $ copy-ssh-id jumphost
+    $ svty srhaque@jumphost+admin:secret@videoserver
+    ```
 
-    1. As before, jump through jumphost to reach videoserver. But this time, the user prefers to be prompted for the password on videoserver:
+1. As before, jump through jumphost to reach videoserver. But this time, the user prefers to be prompted for the password on videoserver:
 
-        ```bash
-        $ svty srhaque@jumphost+admin@videoserver
-        ```
+    ```bash
+    $ svty srhaque@jumphost+admin@videoserver
+    ```
 
-    1.  Jump through both jumphost and videoserver to reach videoslave2:
-    
-        ```bash
-        $ svty srhaque@jumphost+admin@videoserver+admin:mycat@videoslave2
-        ```
+1.  Jump through both jumphost and videoserver to reach videoslave2:
+
+    ```bash
+    $ svty srhaque@jumphost+admin@videoserver+admin:mycat@videoslave2
+    ```
 
 In each case, you'll end up on the home screen:
 
-* Start on the home screen
-![Home Screen][homescreen]
+* Start on the home screen:  
+    ![Home Screen][homescreen]  
     Here you see two tmux session and two screen sessions. One of each is already attached to a client, whereas the others are not.
-* Use left/right arrow keys to view any of the tmux or screen sessions:
-![Capture from tmux(1)][tmux-capture]
-![Capture from screen(1)][screen-capture] 
+* Use left/right arrow keys to view any of the tmux or screen sessions:  
+    ![Capture from tmux(1)][tmux-capture]  
+    ![Capture from screen(1)][screen-capture]  
     Notice that sessions "\[2\]" and "\[14083.14027\]" are from tmux and screen respectively, but they are presented in a uniform manner.
-* Hit return to resume it:
-![Resumed tmux(1)][tmux-resume] 
-![Resumed screen(1)][screen-resume] 
+* Hit return to resume it:  
+    ![Resumed tmux(1)][tmux-resume]  
+    ![Resumed screen(1)][screen-resume]  
     Now you are in tmux and screen respectively, and svty has disappeared from view (of course, the SSH connection is setup for you is still there though).
 * If you continue to scroll left/right, and end up on the home screen, hitting return there will create a new session.
 
     * The new session will be based on the first of tmux, screen, or plain vanilla SSH that works.
-    * **TBD** Should svty push local tmux and sreeen settings to the new session? That would avoid having to manually configure each of your target systems with your favourite settings! Feedback or code welcome.
+    * **TBD** Should svty push local tmux and screen settings to the new session? That would avoid having to manually configure each of your target systems with your favourite settings! Feedback or code welcome.
 
 ## Programmatic use
 
