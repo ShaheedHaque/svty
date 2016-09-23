@@ -19,8 +19,8 @@ from setuptools import setup, find_packages
 
 setup(
     name='svty',
-    version='0.8.7',
-    packages=find_packages(),
+    version='0.8.8',
+    packages=find_packages(exclude=["test"]),
     url='https://github.com/ShaheedHaque/svty',
     license='GPL-3.0',
     author='Shaheed Haque',

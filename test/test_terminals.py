@@ -16,21 +16,17 @@
 #
 """nosetest suite for svty's tmux support."""
 import argparse
-import os
-import sys
 import threading
 import time
 
-SCRIPT_DIR = os.path.dirname(__file__)
-sys.path = [os.path.dirname(SCRIPT_DIR)] + sys.path
-from abstract_terminal import AbstractTerminal
+from svty import abstract_terminal
 from svty import screen_terminal
 from svty import tmux_terminal
 from svty import svty
 
 
 class Runner(threading.Thread):
-    def __init__(self, terminal: AbstractTerminal):
+    def __init__(self, terminal: abstract_terminal.AbstractTerminal):
         super(Runner, self).__init__()
         self.terminal = terminal
 
