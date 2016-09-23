@@ -22,7 +22,7 @@ import gettext
 import logging
 import os
 
-from abstract_terminal import AbstractTerminal, AbstractSession, AbstractWindow
+from .abstract_terminal import AbstractTerminal, AbstractSession, AbstractWindow
 
 
 gettext.install(os.path.basename(__file__))

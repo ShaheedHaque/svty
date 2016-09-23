@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # vim: set fileencoding=utf-8 :
 #
 # Copyright (c) 2015 S.R.Haque (srhaque@theiet.org)
@@ -40,11 +39,11 @@ import termios
 import time
 import tty
 
-import jumper
-from abstract_terminal import AbstractSession, AbstractExecutor
-from null_terminal import NullTerminal
-from screen_terminal import ScreenTerminal
-from tmux_terminal import TMuxTerminal
+from . import jumper
+from .abstract_terminal import AbstractSession, AbstractExecutor
+from .null_terminal import NullTerminal
+from .screen_terminal import ScreenTerminal
+from .tmux_terminal import TMuxTerminal
 
 gettext.install(os.path.basename(__file__))
 logger = logging.getLogger(__name__)
@@ -478,7 +477,3 @@ Examples:
     except CommandLineArgumentException as e:
         logger.error(str(e))
         return 1
-
-
-if __name__ == "__main__":
-    sys.exit(main())

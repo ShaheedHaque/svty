@@ -17,7 +17,7 @@
 """A "null" terminal, i.e. the raw SSH session."""
 import subprocess
 
-from abstract_terminal import AbstractTerminal
+from .abstract_terminal import AbstractTerminal
 
 
 class NullTerminal(AbstractTerminal):

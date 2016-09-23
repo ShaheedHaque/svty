@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='svty',
-    version='0.8.6',
-    packages=['svty'],
+    version='0.8.7',
+    packages=find_packages(),
     url='https://github.com/ShaheedHaque/svty',
     license='GPL-3.0',
     author='Shaheed Haque',
@@ -31,5 +31,8 @@ setup(
                  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
                  "Development Status :: 5 - Production/Stable",
                  "Programming Language :: Python :: 3.4"],
+    entry_points = {
+        'console_scripts': ['svty=svty.svty:main'],
+    },
     install_requires=['setproctitle', 'pydevd']
 )
