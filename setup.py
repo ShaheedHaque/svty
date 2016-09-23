@@ -19,7 +19,7 @@ from distutils.core import setup
 
 setup(
     name='svty',
-    version='0.8.5',
+    version='0.8.6',
     packages=['svty'],
     url='https://github.com/ShaheedHaque/svty',
     license='GPL-3.0',
@@ -29,6 +29,7 @@ setup(
     long_description=open('README.rst').read(),
     classifiers=["Topic :: Terminals :: Terminal Emulators/X Terminals",
                  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-                 "Development Status :: 5 - Production/Stable"],
-    requires=['setproctitle', 'pydevd']
+                 "Development Status :: 5 - Production/Stable",
+                 "Programming Language :: Python :: 3.4"],
+    install_requires=['setproctitle', 'pydevd']
 )
