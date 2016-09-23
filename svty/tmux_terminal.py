@@ -95,13 +95,13 @@ class TMuxTerminal(AbstractTerminal):
             sessions = self.lister("list-sessions", TMuxSession)
         except subprocess.CalledProcessError as e:
             unsafe_msgs = ("error connecting to ", "no server running on", "failed to connect to server")
-            if e.returncode == 127 and e.stdout.rfind("command not found") != -1:
+            if e.returncode == 127 and e.output.rfind("command not found") != -1:
                 #
                 # Emulate the local FileNotFoundError.
                 #
-                raise FileNotFoundError(e.stdout.strip()) from None
-            elif e.returncode == 1 and e.stdout.startswith(unsafe_msgs):
-                logger.debug(_("No session list: {}").format(e.stdout.strip()))
+                raise FileNotFoundError(e.output.strip()) from None
+            elif e.returncode == 1 and e.output.startswith(unsafe_msgs):
+                logger.debug(_("No session list: {}").format(e.output.strip()))
                 sessions = []
             else:
                 raise
@@ -112,11 +112,11 @@ class TMuxTerminal(AbstractTerminal):
         try:
             return self.call(["new-session"])
         except subprocess.CalledProcessError as e:
-            if e.returncode == 127 and e.stdout.rfind("command not found") != -1:
+            if e.returncode == 127 and e.output.rfind("command not found") != -1:
                 #
                 # Emulate the local FileNotFoundError.
                 #
-                raise FileNotFoundError(e.stdout.strip()) from None
+                raise FileNotFoundError(e.output.strip()) from None
             else:
                 raise
 
@@ -397,7 +397,7 @@ class TMuxPane(dict):
         try:
             return self.manager.check_output(args + ["-t", self.id()])
         except subprocess.CalledProcessError as e:
-            if e.stdout.startswith("can't find pane"):
+            if e.output.startswith("can't find pane"):
                 #
                 # Sadly, on tmux V1.8 at least, using the fully-qualified id does not work
                 #

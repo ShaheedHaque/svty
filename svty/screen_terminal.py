@@ -51,13 +51,13 @@ class ScreenTerminal(AbstractTerminal):
             lines = self.check_output(["-list"], safe_msgs)
         except subprocess.CalledProcessError as e:
             unsafe_msgs = ("No Sockets found in", "No screen session found")
-            if e.returncode == 127 and e.stdout.rfind("command not found") != -1:
+            if e.returncode == 127 and e.output.rfind("command not found") != -1:
                 #
                 # Emulate the local FileNotFoundError.
                 #
-                raise FileNotFoundError(e.stdout.strip()) from None
-            elif e.returncode == 1 and e.stdout.startswith(unsafe_msgs):
-                logger.debug(_("No session list: {}").format(e.stdout.strip()))
+                raise FileNotFoundError(e.output.strip()) from None
+            elif e.returncode == 1 and e.output.startswith(unsafe_msgs):
+                logger.debug(_("No session list: {}").format(e.output.strip()))
                 lines = ["", ""]
             else:
                 raise
@@ -90,11 +90,11 @@ class ScreenTerminal(AbstractTerminal):
         try:
             return self.call([])
         except subprocess.CalledProcessError as e:
-            if e.returncode == 127 and e.stdout.rfind("command not found") != -1:
+            if e.returncode == 127 and e.output.rfind("command not found") != -1:
                 #
                 # Emulate the local FileNotFoundError.
                 #
-                raise FileNotFoundError(e.stdout.strip()) from None
+                raise FileNotFoundError(e.output.strip()) from None
             else:
                 raise
 

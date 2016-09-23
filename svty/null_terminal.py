@@ -39,10 +39,10 @@ class NullTerminal(AbstractTerminal):
         try:
             return self.exec.exec([self.program, "-i", "-l"], quote=False)
         except subprocess.CalledProcessError as e:
-            if e.returncode == 127 and e.stdout.rfind("command not found") != -1:
+            if e.returncode == 127 and e.output.rfind("command not found") != -1:
                 #
                 # Emulate the local FileNotFoundError.
                 #
-                raise FileNotFoundError(e.stdout.strip()) from None
+                raise FileNotFoundError(e.output.strip()) from None
             else:
                 raise
