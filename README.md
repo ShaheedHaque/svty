@@ -9,6 +9,12 @@ Curses UI for a combination of tmux/screen and SSH (with multiple jump hosts).
 
     * If neither tmux nor screen are available, svty falls back to just a regular SSH interactive session (or indeed the local equivalent).
 
+## Installation
+
+```bash
+$ pip3 install svty
+```
+
 ## Interactive use
 Svty is typically run from a command line, or can be used with programs like konsole(1) and gnome-terminal(1). This works well if you don't need to specify any passwords interactively:
     
@@ -65,10 +71,10 @@ In each case, you'll end up on the home screen:
 ### Navigation model - additional features
 
 * The UI model looks like this:  
-    | Home Screen      | tmux Session Screens... | screen Session Screens... |
-    |------------------|-------------------------|---------------------------|
-    | Additional pages | Additional pages        | Additional pages          |
-    | ...              | ...                     | ...                       |
+    | Home Screen      | tmux Session Screens... | screen Session Screens... |  
+    |------------------|-------------------------|---------------------------|  
+    | Additional pages | Additional pages        | Additional pages          |  
+    | ...              | ...                     | ...                       |  
     | Additional pages | Additional pages        | Additional pages          |
 * On any screen, use Page Down to view the additional pages.
 

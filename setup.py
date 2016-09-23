@@ -22,7 +22,7 @@ long_description = pypandoc.convert('README.md', 'rst')
 
 setup(
     name='svty',
-    version='0.8.2',
+    version='0.8.3',
     packages=['svty'],
     url='https://github.com/ShaheedHaque/svty',
     license='GPL-3.0',
@@ -33,5 +33,5 @@ setup(
     classifiers=["Topic :: Terminals :: Terminal Emulators/X Terminals",
                  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
                  "Development Status :: 5 - Production/Stable"],
-    requires=['pypandoc', 'setproctitle', 'pydevd']
+    requires=['pandoc', 'pypandoc', 'setproctitle', 'pydevd']
 )
