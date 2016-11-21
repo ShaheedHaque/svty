@@ -103,7 +103,7 @@ class SSHMultiPass(threading.Thread):
         super(SSHMultiPass, self).__init__(name=self.__class__.__name__)
         self.prompt_buffer = b""
         self.passwords = {k.encode(): v.encode() for k, v in passwords.items()}
-        self.allpasswords = [k for k, v in self.passwords.items()]
+        self.allpasswords = list(self.passwords.keys())
         self.add_cr = add_cr
         self.is_a_tty = None
         self.old_tty = None
