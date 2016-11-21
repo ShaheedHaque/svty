@@ -265,6 +265,9 @@ class SSHMultiPass(threading.Thread):
                     # Forward to child.
                     #
                     data = os.read(self.stdin.fileno(), 1024)
+                    if len(data) == 0:
+                        logger.debug(_("Stdin closed"))
+                        break
                     self._write_child(data)
         finally:
             #
@@ -306,6 +309,9 @@ class SSHMultiPass(threading.Thread):
                         # Forward to child.
                         #
                         data = os.read(self.stdin.fileno(), 1024)
+                        if len(data) == 0:
+                            logger.debug(_("Stdin closed"))
+                            break
                         self._write_child(data)
         finally:
             logger.debug(_("Stopping {}").format(self))
