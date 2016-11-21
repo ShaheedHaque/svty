@@ -72,11 +72,14 @@ class ScreenTerminal(AbstractTerminal):
         #         3883.pts-2.host (16/09/16 08:35:15)     (Detached)
         # 2 Sockets in /var/run/screen/S-srhaque.
         #
-        lines = lines[1:-1]
-        lines = [l.strip().split("\t") for l in lines]
+        lines = [l.strip().split("\t") for l in lines if l.startswith("\t")]
         sessions = []
         for line in lines:
-            name, created, attached = line
+            try:
+                name, created, attached = line
+            except ValueError:
+                name, attached = line
+                created = "(01/01/70 00:00:00)"
             #
             # NOTE: the format is locale-dependent.
             #
