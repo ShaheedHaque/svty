@@ -354,7 +354,7 @@ class SSHMultiPass(threading.Thread):
 
     def pong(self, size):
         """
-        Write to remote end of SSH connection. See FOLLOW_ON_PIO for details.
+        Read from remote end of SSH connection. See FOLLOW_ON_PIO for details.
 
         :return:                    Upto size bytes read.
         """
